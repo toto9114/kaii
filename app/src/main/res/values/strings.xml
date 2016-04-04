@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">kaii</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="back_pressed_message">뒤로 버튼 한번 더 누르시면 종료됩니다.</string>
+    <string name="alert_insert_id_password">로그인 정보를 입력해주세요.</string>
+</resources>
