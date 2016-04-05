@@ -1,14 +1,17 @@
 package com.example.kaii;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -21,8 +24,8 @@ public class MainActivity extends Activity {
     private WebView mWebView;
 
     public static final String EXTRA_MESSAGE = "site";
-//    private static final String URL_FORMAT = "http://www.naver.com";
     private static final String URL_FORMAT = "http://kaii.plani.co.kr/system/native/gate/code/";
+
     public static final int MESSAGE_BACK_KEY_TIMEOUT = 0;
     public static final int BACK_KEY_TIME = 2000;
 
@@ -39,6 +42,8 @@ public class MainActivity extends Activity {
         }
     });
 
+
+    ProgressDialog dialog = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,9 @@ public class MainActivity extends Activity {
 
         Intent intent = getIntent();
         String key = intent.getStringExtra(EXTRA_MESSAGE);
+
+        dialog = new ProgressDialog(this);
+        dialog.setMessage("Loading...");
 
         //javascript useable
         mWebView.getSettings().setJavaScriptEnabled(true);
@@ -113,26 +121,11 @@ public class MainActivity extends Activity {
         mWebView.setWebViewClient(new WebViewClientClass());
 
         //mWebView.loadUrl("http://kaii.plani.co.kr");
-//        mWebView.loadUrl(URL_FORMAT);
+        Log.i("MainActivity",""+mWebView.getProgress());
         mWebView.loadUrl(URL_FORMAT + key);
-
     }
 
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-//			if(mWebView.canGoBack()){
-//				mWebView.goBack();
-//			}
-//			else{
-//				Toast.makeText(MainActivity.this, "click", Toast.LENGTH_SHORT).show();
-//				finish();
-//			}
-//            return true;
-//        }
-//
-//        return super.onKeyDown(keyCode, event);
-//    }
+
 
     private class WebViewClientClass extends WebViewClient {
         @Override
@@ -141,16 +134,26 @@ public class MainActivity extends Activity {
             return true;
         }
 
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            dialog.show();
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            dialog.dismiss();
+        }
 
     }
-
 
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
         if (mWebView.canGoBack()) {
             mWebView.goBack();
-
+            Log.i("MainActivity",mWebView.getUrl());
         } else {
             if (!isBackPressed) {
                 Toast.makeText(this, R.string.back_pressed_message, Toast.LENGTH_SHORT).show();
@@ -161,12 +164,5 @@ public class MainActivity extends Activity {
                 finish();
             }
         }
-    }
-
-    /*
-         * Layout
-         */
-    private void setLayout() {
-        mWebView = (WebView) findViewById(R.id.webview);
     }
 }

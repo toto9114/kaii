@@ -28,6 +28,7 @@
             android:screenOrientation="landscape"></activity>
         <activity
             android:name=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="landscape">
 
